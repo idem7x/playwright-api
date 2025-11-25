@@ -1,20 +1,11 @@
 import { APIRequestContext, APIResponse, expect } from '@playwright/test';
+import {RequestBody, RequestHeaders, RequestParams} from "@types/userTypes";
 
-/**
- * Fluent API Builder for making HTTP requests
- * Uses Builder/Fluent pattern for chainable method calls
- * 
- * @example
- * await api
- *   .path('/users')
- *   .body(userData)
- *   .postRequest(201)
- */
 export class ApiBuilder {
   private endpoint: string = '';
-  private requestParams?: Record<string, any>;
-  private requestHeaders?: Record<string, string>;
-  private requestBody?: any;
+  private requestParams?: RequestParams;
+  private requestHeaders?: RequestHeaders;
+  private requestBody?: RequestBody;
   private request: APIRequestContext;
 
   constructor(request: APIRequestContext) {
@@ -37,7 +28,7 @@ export class ApiBuilder {
    * @param params - Query parameters
    * @returns this for chaining
    */
-  params(params: Record<string, any>): this {
+  params(params: RequestParams): this {
     this.requestParams = params;
     return this;
   }
@@ -47,7 +38,7 @@ export class ApiBuilder {
    * @param data - Request body data
    * @returns this for chaining
    */
-  body(data: any): this {
+  body(data: RequestBody): this {
     this.requestBody = data;
     return this;
   }
@@ -57,7 +48,7 @@ export class ApiBuilder {
    * @param headers - Custom headers
    * @returns this for chaining
    */
-  headers(headers: Record<string, string>): this {
+  headers(headers: RequestHeaders): this {
     this.requestHeaders = { ...this.requestHeaders, ...headers };
     return this;
   }
@@ -67,8 +58,9 @@ export class ApiBuilder {
    * @returns this for chaining
    */
   withoutAuth(): this {
-    const { Authorization, ...rest } = this.requestHeaders || {};
-    this.requestHeaders = rest;
+    if (this.requestHeaders) {
+      delete this.requestHeaders['Authorization'];
+    }
     return this;
   }
 
@@ -94,7 +86,7 @@ export class ApiBuilder {
    * @param expectedStatus - Expected HTTP status code
    * @returns Parsed JSON response
    */
-  async getRequestJson<T = any>(expectedStatus: number): Promise<T> {
+  async getRequestJson<T>(expectedStatus: number): Promise<T> {
     const response = await this.getRequest(expectedStatus);
     return await response.json() as T;
   }
@@ -121,7 +113,7 @@ export class ApiBuilder {
    * @param expectedStatus - Expected HTTP status code
    * @returns Parsed JSON response
    */
-  async postRequestJson<T = any>(expectedStatus: number): Promise<T> {
+  async postRequestJson<T>(expectedStatus: number): Promise<T> {
     const response = await this.postRequest(expectedStatus);
     return await response.json() as T;
   }
@@ -148,7 +140,7 @@ export class ApiBuilder {
    * @param expectedStatus - Expected HTTP status code
    * @returns Parsed JSON response
    */
-  async putRequestJson<T = any>(expectedStatus: number): Promise<T> {
+  async putRequestJson<T>(expectedStatus: number): Promise<T> {
     const response = await this.putRequest(expectedStatus);
     return await response.json() as T;
   }
@@ -175,7 +167,7 @@ export class ApiBuilder {
    * @param expectedStatus - Expected HTTP status code
    * @returns Parsed JSON response
    */
-  async patchRequestJson<T = any>(expectedStatus: number): Promise<T> {
+  async patchRequestJson<T>(expectedStatus: number): Promise<T> {
     const response = await this.patchRequest(expectedStatus);
     return await response.json() as T;
   }

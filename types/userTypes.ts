@@ -19,3 +19,7 @@ export interface ErrorResponse {
   field: string;
   message: string;
 }
+
+export type RequestParams = Record<string, string | number | boolean>;
+export type RequestBody = Record<string, unknown> | unknown[] | string | null;
+export type RequestHeaders = Record<string, string>;

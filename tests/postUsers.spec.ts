@@ -1,35 +1,37 @@
-import { test, expect } from '../fixtures/apiFixtures';
-import '../utils/customMatchers';
-import { User, ErrorResponse } from '@types/userTypes';
-import {EndpointEnum} from "../enums/EndpointEnum";
+import { test, expect } from 'fixtures/apiFixtures';
+import 'utils/customMatchers';
+import { User, ErrorResponse } from 'types/userTypes';
+import {Endpoint} from "enums/Endpoint";
+import {Schema} from "enums/Schema";
+import {logger} from "utils/logger";
+import {DataGenerator} from "../utils/dataGenerator";
 
-test.describe('POST Requests - Create User (Fluent API)', () => {
+test.describe('POST Requests', () => {
   let createdUserIds: number[] = [];
 
   test.afterEach(async ({ api }) => {
-    // Cleanup: Delete created users
     for (const userId of createdUserIds) {
       try {
         await api
           .reset()
-          .path(`${EndpointEnum.USERS}/${userId}`)
+          .path(`${Endpoint.USERS}/${userId}`)
           .deleteRequest(204);
       } catch (error) {
-        console.log(`Failed to delete user ${userId}:`, error);
+        logger.warn(`Failed to delete user ${userId}:`, error);
       }
     }
     createdUserIds = [];
   });
 
-  test('POST - Should create user with data generator', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateUser();
+  test('POST - Should create user with data generator', async ({ api }) => {
+    const newUser = DataGenerator.generateUser();
 
     const createdUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .postRequestJson<User>(201);
 
-    await expect(createdUser).shouldMatchSchema('user', 'POST_user');
+    await expect(createdUser).shouldMatchSchema(Schema.POST_USER);
     expect(createdUser.id).toBeDefined();
     expect(createdUser.name).shouldEqual(newUser.name);
     expect(createdUser.email).shouldEqual(newUser.email);
@@ -40,11 +42,11 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     createdUserIds.push(createdUser.id);
   });
 
-  test('POST - Should create male user using generator', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateMaleUser();
+  test('POST - Should create male user using generator', async ({ api }) => {
+    const newUser = DataGenerator.generateMaleUser();
 
     const createdUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .postRequestJson<User>(201);
 
@@ -52,11 +54,11 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     createdUserIds.push(createdUser.id);
   });
 
-  test('POST - Should create female user using generator', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateFemaleUser();
+  test('POST - Should create female user using generator', async ({ api }) => {
+    const newUser = DataGenerator.generateFemaleUser();
 
     const createdUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .postRequestJson<User>(201);
 
@@ -64,11 +66,11 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     createdUserIds.push(createdUser.id);
   });
 
-  test('POST - Should create active user', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateActiveUser();
+  test('POST - Should create active user', async ({ api }) => {
+    const newUser = DataGenerator.generateActiveUser();
 
     const createdUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .postRequestJson<User>(201);
 
@@ -76,30 +78,30 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     createdUserIds.push(createdUser.id);
   });
 
-  test('POST - Should fail with 422 when email is missing', async ({ api, dataGenerator }) => {
+  test('POST - Should fail with 422 when email is missing', async ({ api }) => {
     const invalidUser = {
-      name: dataGenerator.generateName(),
+      name: DataGenerator.generateName(),
       gender: 'male',
       status: 'active'
     };
 
     const errors = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(invalidUser)
       .postRequestJson<ErrorResponse[]>(422);
 
-    await expect(errors).shouldMatchSchema('user', 'ERROR_response');
+    await expect(errors).shouldMatchSchema(Schema.POST_ERROR);
     expect(errors.length).toBeGreaterThan(0);
     expect(errors.some(e => e.field === 'email')).toBeTruthy();
   });
 
-  test('POST - Should fail with 422 for invalid email format', async ({ api, dataGenerator }) => {
-    const invalidUser = dataGenerator.generateUser({
-      email: dataGenerator.generateInvalidEmail()
+  test('POST - Should fail with 422 for invalid email format', async ({ api }) => {
+    const invalidUser = DataGenerator.generateUser({
+      email: DataGenerator.generateInvalidEmail()
     });
 
     const errors = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(invalidUser)
       .postRequestJson<ErrorResponse[]>(422);
 
@@ -108,21 +110,18 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     expect(emailError?.message).shouldContain('invalid');
   });
 
-  test('POST - Should fail with 422 for duplicate email', async ({ api, dataGenerator }) => {
-    const userData = dataGenerator.generateUser();
-    
-    // Create first user
+  test('POST - Should fail with 422 for duplicate email', async ({ api }) => {
+    const userData = DataGenerator.generateUser();
     const firstUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(userData)
       .postRequestJson<User>(201);
     
     createdUserIds.push(firstUser.id);
 
-    // Try to create duplicate
     const errors = await api
       .reset()
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(userData)
       .postRequestJson<ErrorResponse[]>(422);
     
@@ -131,11 +130,11 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     expect(emailError?.message).shouldContain('taken');
   });
 
-  test('POST - Should fail with 401 when unauthorized', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateUser();
+  test('POST - Should fail with 401 when unauthorized', async ({ api }) => {
+    const newUser = DataGenerator.generateUser();
 
     const response = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .withoutAuth()
       .postRequest(401);
@@ -145,14 +144,14 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     expect(body.message.toLowerCase()).shouldContain('authentication');
   });
 
-  test('POST - Should create multiple users in sequence', async ({ api, dataGenerator }) => {
-    const usersToCreate = dataGenerator.generateUsers(3);
+  test('POST - Should create multiple users in sequence', async ({ api }) => {
+    const usersToCreate = DataGenerator.generateUsers(3);
     const createdUsers: User[] = [];
 
     for (const userData of usersToCreate) {
       const user = await api
         .reset()
-        .path(EndpointEnum.USERS)
+        .path(Endpoint.USERS)
         .body(userData)
         .postRequestJson<User>(201);
       
@@ -167,11 +166,11 @@ test.describe('POST Requests - Create User (Fluent API)', () => {
     });
   });
 
-  test('POST - Should validate all required fields are returned', async ({ api, dataGenerator }) => {
-    const newUser = dataGenerator.generateUser();
+  test('POST - Should validate all required fields are returned', async ({ api }) => {
+    const newUser = DataGenerator.generateUser();
 
     const createdUser = await api
-      .path(EndpointEnum.USERS)
+      .path(Endpoint.USERS)
       .body(newUser)
       .postRequestJson<User>(201);
 

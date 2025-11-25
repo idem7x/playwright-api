@@ -1,71 +1,51 @@
-import Ajv, { ValidateFunction } from 'ajv';
+import Ajv, { ValidateFunction } from "ajv";
+import addFormats from "ajv-formats";
+import * as fs from "fs";
+import * as path from "path";
 
-export class SchemaValidator {
-  private ajv: Ajv;
+const SCHEMA_BASE_PATH = path.resolve("schemas");
 
-  constructor() {
-    this.ajv = new Ajv({ allErrors: true, verbose: true });
-    
-    // Add custom format for email if needed
-    this.ajv.addFormat('email', {
-      type: 'string',
-      validate: (data: string) => {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data);
-      }
-    });
-  }
+class SchemaValidator {
+    private ajv: Ajv;
+    private initialized = false;
 
-  /**
-   * Validates data against a JSON schema
-   * @param schema - JSON schema to validate against
-   * @param data - Data to validate
-   * @returns Validation result with errors if any
-   */
-  validate(schema: object, data: unknown): {
-    valid: boolean;
-    errors: string[];
-  } {
-    const validate: ValidateFunction = this.ajv.compile(schema);
-    const valid = validate(data);
-
-    if (!valid && validate.errors) {
-      const errors = validate.errors.map(
-        (error) => `${error.instancePath} ${error.message}`
-      );
-      return { valid: false, errors };
+    constructor() {
+        this.ajv = new Ajv({ allErrors: true });
+        addFormats(this.ajv);
     }
 
-    return { valid: true, errors: [] };
-  }
+    private loadAllSchemas(): void {
+        if (this.initialized) return;
 
-  /**
-   * Validates headers against expected schema
-   * @param expectedHeaders - Expected headers schema
-   * @param actualHeaders - Actual headers received
-   * @returns Validation result
-   */
-  validateHeaders(
-    expectedHeaders: Record<string, { type: string }>,
-    actualHeaders: Record<string, string>
-  ): { valid: boolean; errors: string[] } {
-    const errors: string[] = [];
+        const files = fs.readdirSync(SCHEMA_BASE_PATH);
 
-    for (const [key, schema] of Object.entries(expectedHeaders)) {
-      const headerValue = actualHeaders[key.toLowerCase()];
-      
-      if (!headerValue) {
-        errors.push(`Missing header: ${key}`);
-        continue;
-      }
+        for (const file of files) {
+            if (file.endsWith(".json")) {
+                const schemaPath = path.join(SCHEMA_BASE_PATH, file);
+                const schema = JSON.parse(fs.readFileSync(schemaPath, "utf-8"));
+                this.ajv.addSchema(schema, file);
+            }
+        }
 
-      if (schema.type === 'string' && typeof headerValue !== 'string') {
-        errors.push(`Header ${key} should be string, got ${typeof headerValue}`);
-      }
+        this.initialized = true;
     }
 
-    return {
-      valid: errors.length === 0,
-      errors
-    };
-  }
+    public validate(schemaName: string, data: unknown): { valid: boolean; errors: string | null } {
+        this.loadAllSchemas();
+
+        const validate: ValidateFunction | undefined = this.ajv.getSchema(schemaName);
+
+        if (!validate) {
+            throw new Error(`Schema "${schemaName}" not found in ${SCHEMA_BASE_PATH}`);
+        }
+
+        const valid = validate(data);
+
+        return {
+            valid: !!valid,
+            errors: valid ? null : JSON.stringify(validate.errors, null, 2)
+        };
+    }
 }
+
+export default new SchemaValidator();

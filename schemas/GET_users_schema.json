@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "GET_user_schema.json"
+  }
+}

@@ -1,4 +1,4 @@
-export enum EndpointEnum {
+export enum Endpoint {
     USERS = "/users",
     POSTS = "/posts",
     COMMENTS = "/comments",
