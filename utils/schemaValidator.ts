@@ -1,4 +1,5 @@
-import Ajv, { ValidateFunction } from "ajv";
+import Ajv from "ajv";
+import type { ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
 import * as fs from "fs";
 import * as path from "path";

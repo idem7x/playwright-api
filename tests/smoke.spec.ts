@@ -1,6 +1,6 @@
 import { test, expect } from 'fixtures/apiFixtures';
 import 'utils/customMatchers';
-import { User } from 'types/userTypes';
+import type { User } from 'types/userTypes';
 import { logger } from 'utils/logger';
 import {Endpoint} from "enums/Endpoint";
 import {Schema} from "enums/Schema";
