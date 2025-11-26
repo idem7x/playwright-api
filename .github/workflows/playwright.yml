@@ -25,6 +25,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Create .env file
+        run: |
+            cat << EOF > .env
+              GO_REST_API_TOKEN: ${{ secrets.GO_REST_API_TOKEN }}
+              LOG_LEVEL: info
+              CI: true
+            EOF
+
       - name: Check if token exists
         run: |
           if [ -z "$GO_REST_API_TOKEN" ]; then
@@ -39,10 +47,6 @@ jobs:
 
       - name: Run API tests
         run: npx playwright test
-        env:
-          GO_REST_API_TOKEN: ${{ secrets.GO_REST_API_TOKEN }}
-          LOG_LEVEL: info
-          CI: true
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
