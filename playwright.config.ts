@@ -1,4 +1,4 @@
-import {defineConfig, devices} from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -12,7 +12,7 @@ export default defineConfig({
     reporter: [
         ['html'],
         ['list'],
-        ['json', {outputFile: 'test-results/results.json'}]
+        ['json', { outputFile: 'test-results/results.json' }]
     ],
     use: {
         baseURL: 'https://gorest.co.in/public/v2'
@@ -20,7 +20,7 @@ export default defineConfig({
     projects: [
         {
             name: 'API Tests',
-            use: {...devices['Desktop Chrome']},
+            use: { ...devices['Desktop Chrome'] },
         },
     ],
     timeout: 30000,

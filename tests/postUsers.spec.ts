@@ -130,19 +130,19 @@ test.describe('POST Requests', () => {
     expect(emailError?.message).shouldContain('taken');
   });
 
-  // test('POST - Should fail with 401 when unauthorized', async ({ api }) => {
-  //   const newUser = DataGenerator.generateUser();
-  //
-  //   const response = await api
-  //     .path(Endpoint.USERS)
-  //     .body(newUser)
-  //     .withoutAuth()
-  //     .postRequest(401);
-  //
-  //   const body = await response.json();
-  //   expect(body.message).toBeDefined();
-  //   expect(body.message.toLowerCase()).shouldContain('authentication');
-  // });
+  test('POST - Should fail with 401 when unauthorized', async ({ api }) => {
+    const newUser = DataGenerator.generateUser();
+
+    const response = await api
+      .path(Endpoint.USERS)
+      .body(newUser)
+      .withoutAuth()
+      .postRequest(401);
+
+    const body = await response.json();
+    expect(body.message).toBeDefined();
+    expect(body.message.toLowerCase()).shouldContain('authentication');
+  });
 
   test('POST - Should create multiple users in sequence', async ({ api }) => {
     const usersToCreate = DataGenerator.generateUsers(3);

@@ -6,8 +6,9 @@ type ApiFixtures = {
 };
 
 export const test = base.extend<ApiFixtures>({
-  api: async ({ request }, use) => {
-    const api = new ApiBuilder(request);
+  api: async ({ request }, use, testInfo) => {
+    const baseURL = testInfo.project.use.baseURL || '';
+    const api = new ApiBuilder(request, baseURL);
     await use(api);
   }
 });

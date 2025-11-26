@@ -4,12 +4,14 @@ import type { RequestBody, RequestHeaders, RequestParams } from "@types/userType
 
 export class ApiBuilder {
   private endpoint: string = '';
+  private baseUrl: string = '';
   private requestParams?: RequestParams;
   private requestHeaders?: RequestHeaders;
   private requestBody?: RequestBody;
   private request: APIRequestContext;
 
-  constructor(request: APIRequestContext) {
+  constructor(request: APIRequestContext, baseUrl: string) {
+    this.baseUrl = baseUrl;
     this.request = request;
     this.requestHeaders = this.getDefaultHeaders();
   }
@@ -20,7 +22,7 @@ export class ApiBuilder {
    * @returns this for chaining
    */
   path(endpoint: string): this {
-    this.endpoint = `https://gorest.co.in/public/v2${endpoint}`;
+    this.endpoint = `${this.baseUrl}${endpoint}`;
     return this;
   }
 
@@ -197,8 +199,7 @@ export class ApiBuilder {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      // 'Authorization': `Bearer ${process.env.GO_REST_API_TOKEN}`
-      'Authorization': `Bearer 2059b85dde4dd8b1e494a57cf35008f7909a9c863799e486a2aa030dbecd0c0c`
+      'Authorization': `Bearer ${process.env.GO_REST_API_TOKEN}`
     };
   }
 
