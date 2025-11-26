@@ -2,9 +2,9 @@ import { test, expect } from 'fixtures/apiFixtures';
 import 'utils/customMatchers';
 import type { User } from 'types/userTypes';
 import { logger } from 'utils/logger';
-import {Endpoint} from "enums/Endpoint";
-import {Schema} from "enums/Schema";
-import {DataGenerator} from "utils/dataGenerator";
+import { Endpoint } from "enums/Endpoint";
+import { Schema } from "enums/Schema";
+import { DataGenerator } from "utils/dataGenerator";
 
 test.describe('Smoke Tests - Critical User Flows', () => {
   test('Create, Verify, Update, and Delete User - Full CRUD Flow', async ({ api }) => {
@@ -23,7 +23,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
     const userId = createdUser.id;
     logger.info('User created', { userId, email: createdUser.email });
 
-    // READ - Verify in list
     logger.info('Verify user appears in users list');
     const usersList = await api
       .reset()
@@ -36,7 +35,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
     expect(foundUser).toBeDefined();
     expect(foundUser?.email).shouldEqual(createdUser.email);
 
-    // UPDATE
     logger.info('Update user information');
     const updateData = {
       name: DataGenerator.generateName(),
@@ -54,7 +52,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
     expect(updatedUser.status).shouldEqual(updateData.status);
     logger.info('User updated', { userId, newName: updatedUser.name });
 
-    // DELETE
     logger.info('Delete user');
     await api
       .reset()
@@ -63,7 +60,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
 
     logger.info('User deleted', { userId });
 
-    // VERIFY DELETION
     logger.info('Verify user no longer exists');
     await api
       .reset()
@@ -74,10 +70,8 @@ test.describe('Smoke Tests - Critical User Flows', () => {
   });
 
   test('Create and Delete User - Quick Smoke Test', async ({ api }) => {
-    // Similar to the screenshot example
     const userRequest = DataGenerator.generateUser();
-    
-    // Create user
+
     const createUserResponse = await api
       .path(Endpoint.USERS)
       .body(userRequest)
@@ -87,7 +81,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
     expect(createUserResponse.email).shouldEqual(userRequest.email);
     const userId = createUserResponse.id;
 
-    // Get users list
     const usersResponse = await api
       .reset()
       .path(Endpoint.USERS)
@@ -97,13 +90,11 @@ test.describe('Smoke Tests - Critical User Flows', () => {
     await expect(usersResponse).shouldMatchSchema(Schema.GET_USERS);
     expect(usersResponse.some(u => u.id === userId)).toBeTruthy();
 
-    // Delete user
     await api
       .reset()
       .path(`${Endpoint.USERS}/${userId}`)
       .deleteRequest(204);
 
-    // Verify deletion
     const usersResponseAfterDelete = await api
       .reset()
       .path(Endpoint.USERS)
@@ -133,7 +124,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
 
     expect(createdIds.length).toBe(usersCount);
 
-    // Cleanup all users
     logger.info('Cleanup - delete all created users');
     for (const userId of createdIds) {
       await api
@@ -142,7 +132,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
         .deleteRequest(204);
     }
 
-    // Verify all deleted
     logger.info('Verify all users deleted');
     for (const userId of createdIds) {
       await api
@@ -155,14 +144,12 @@ test.describe('Smoke Tests - Critical User Flows', () => {
   });
 
   test('User filtering smoke test', async ({ api }) => {
-    // Create male user
     const maleUser = DataGenerator.generateMaleUser();
     const createdMale = await api
       .path(Endpoint.USERS)
       .body(maleUser)
       .postRequestJson<User>(201);
 
-    // Create female user
     const femaleUser = DataGenerator.generateFemaleUser();
     const createdFemale = await api
       .reset()
@@ -170,7 +157,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .body(femaleUser)
       .postRequestJson<User>(201);
 
-    // Filter by male
     const maleUsers = await api
       .reset()
       .path(Endpoint.USERS)
@@ -179,7 +165,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
 
     expect(maleUsers.some(u => u.id === createdMale.id)).toBeTruthy();
 
-    // Filter by female
     const femaleUsers = await api
       .reset()
       .path(Endpoint.USERS)
@@ -188,7 +173,6 @@ test.describe('Smoke Tests - Critical User Flows', () => {
 
     expect(femaleUsers.some(u => u.id === createdFemale.id)).toBeTruthy();
 
-    // Cleanup
     await api.reset().path(`${Endpoint.USERS}/${createdMale.id}`).deleteRequest(204);
     await api.reset().path(`${Endpoint.USERS}/${createdFemale.id}`).deleteRequest(204);
   });

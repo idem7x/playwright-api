@@ -36,6 +36,7 @@ export default [
                 allowDeclarations: true
             }],
 
+            "object-curly-spacing": ["error", "always"],
             "no-console": "warn",
             "no-debugger": "error",
             "prefer-const": "error",

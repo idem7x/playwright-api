@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import type {CreateUserRequest, UserGender} from 'types/userTypes';
+import type { CreateUserRequest, UserGender } from 'types/userTypes';
 
 export class DataGenerator {
   static generateEmail(options?: {

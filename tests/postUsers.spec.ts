@@ -1,10 +1,10 @@
 import { test, expect } from 'fixtures/apiFixtures';
 import 'utils/customMatchers';
 import type { User, ErrorResponse } from 'types/userTypes';
-import {Endpoint} from "enums/Endpoint";
-import {Schema} from "enums/Schema";
-import {logger} from "utils/logger";
-import {DataGenerator} from "../utils/dataGenerator";
+import { Endpoint } from "enums/Endpoint";
+import { Schema } from "enums/Schema";
+import { logger } from "utils/logger";
+import { DataGenerator } from "utils/dataGenerator";
 
 test.describe('POST Requests', () => {
   let createdUserIds: number[] = [];
@@ -174,7 +174,6 @@ test.describe('POST Requests', () => {
       .body(newUser)
       .postRequestJson<User>(201);
 
-    // Check all required fields
     expect(createdUser).toHaveProperty('id');
     expect(createdUser).toHaveProperty('name');
     expect(createdUser).toHaveProperty('email');
