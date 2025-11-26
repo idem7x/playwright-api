@@ -197,7 +197,8 @@ export class ApiBuilder {
     return {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.GO_REST_API_TOKEN}`
+      // 'Authorization': `Bearer ${process.env.GO_REST_API_TOKEN}`
+      'Authorization': `Bearer 2059b85dde4dd8b1e494a57cf35008f7909a9c863799e486a2aa030dbecd0c0c`
     };
   }
 
