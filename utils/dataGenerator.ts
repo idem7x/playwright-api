@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
-import type { CreateUserRequest, UserGender } from 'types/userTypes';
+import type { CreateUserRequest, UserGender, UserStatus } from 'types/userTypes';
+
+type SexType = NonNullable<Parameters<typeof faker.person.fullName>[0]>['sex'];
 
 export class DataGenerator {
+
   static generateEmail(options?: {
     firstName?: string;
     lastName?: string;
@@ -36,18 +39,18 @@ export class DataGenerator {
 
   static generateName(gender?: UserGender): string {
     if (gender === 'male') {
-      return faker.person.fullName({ sex: 'male' });
+      return faker.person.fullName({ sex: 'male' as SexType });
     } else if (gender === 'female') {
-      return faker.person.fullName({ sex: 'female' });
+      return faker.person.fullName({ sex: 'female' as SexType });
     }
     return faker.person.fullName();
   }
 
   static generateFirstName(gender?: UserGender): string {
     if (gender === 'male') {
-      return faker.person.firstName('male');
+      return faker.person.firstName('male' as SexType);
     } else if (gender === 'female') {
-      return faker.person.firstName('female');
+      return faker.person.firstName('female' as SexType);
     }
     return faker.person.firstName();
   }
@@ -57,8 +60,8 @@ export class DataGenerator {
   }
 
   static generateUser(overrides?: Partial<CreateUserRequest>): CreateUserRequest {
-    const gender = faker.helpers.arrayElement(['male', 'female'] as const);
-    const status = faker.helpers.arrayElement(['active', 'inactive'] as const);
+    const gender = faker.helpers.arrayElement<UserGender>(['male', 'female']);
+    const status = faker.helpers.arrayElement<UserStatus>(['active', 'inactive']);
     const firstName = this.generateFirstName(gender);
     const lastName = this.generateLastName();
 
@@ -79,7 +82,7 @@ export class DataGenerator {
       name: `${firstName} ${lastName}`,
       email: this.generateEmail({ firstName, lastName }),
       gender: 'male',
-      status: faker.helpers.arrayElement(['active', 'inactive'] as const),
+      status: faker.helpers.arrayElement<UserStatus>(['active', 'inactive']),
       ...overrides
     };
   }
@@ -92,7 +95,7 @@ export class DataGenerator {
       name: `${firstName} ${lastName}`,
       email: this.generateEmail({ firstName, lastName }),
       gender: 'female',
-      status: faker.helpers.arrayElement(['active', 'inactive'] as const),
+      status: faker.helpers.arrayElement<UserStatus>(['active', 'inactive']),
       ...overrides
     };
   }

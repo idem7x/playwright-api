@@ -17,7 +17,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .body(userData)
       .postRequestJson<User>(201);
 
-    await expect(createdUser).shouldMatchSchema(Schema.POST_USER);
+    await expect(createdUser).shouldMatchSchema(Schema.USER);
     expect(createdUser.name).shouldEqual(userData.name);
     expect(createdUser.email).shouldEqual(userData.email);
     const userId = createdUser.id;
@@ -30,7 +30,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .params({ page: 1, per_page: 10 })
       .getRequestJson<User[]>(200);
 
-    await expect(usersList).shouldMatchSchema(Schema.GET_USERS);
+    await expect(usersList).shouldMatchSchema(Schema.USERS);
     const foundUser = usersList.find(u => u.id === userId);
     expect(foundUser).toBeDefined();
     expect(foundUser?.email).shouldEqual(createdUser.email);
@@ -47,7 +47,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .body(updateData)
       .putRequestJson<User>(200);
 
-    await expect(updatedUser).shouldMatchSchema(Schema.POST_USER);
+    await expect(updatedUser).shouldMatchSchema(Schema.USER);
     expect(updatedUser.name).shouldEqual(updateData.name);
     expect(updatedUser.status).shouldEqual(updateData.status);
     logger.info('User updated', { userId, newName: updatedUser.name });
@@ -77,7 +77,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .body(userRequest)
       .postRequestJson<User>(201);
 
-    await expect(createUserResponse).shouldMatchSchema(Schema.POST_USER);
+    await expect(createUserResponse).shouldMatchSchema(Schema.USER);
     expect(createUserResponse.email).shouldEqual(userRequest.email);
     const userId = createUserResponse.id;
 
@@ -87,7 +87,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .params({ page: 1, per_page: 10 })
       .getRequestJson<User[]>(200);
 
-    await expect(usersResponse).shouldMatchSchema(Schema.GET_USERS);
+    await expect(usersResponse).shouldMatchSchema(Schema.USERS);
     expect(usersResponse.some(u => u.id === userId)).toBeTruthy();
 
     await api
@@ -101,7 +101,7 @@ test.describe('Smoke Tests - Critical User Flows', () => {
       .params({ page: 1, per_page: 10 })
       .getRequestJson<User[]>(200);
 
-    await expect(usersResponseAfterDelete).shouldMatchSchema(Schema.GET_USERS);
+    await expect(usersResponseAfterDelete).shouldMatchSchema(Schema.USERS);
     expect(usersResponseAfterDelete.some(u => u.id === userId)).toBeFalsy();
   });
 

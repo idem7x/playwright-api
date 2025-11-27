@@ -31,7 +31,7 @@ test.describe('POST Requests', () => {
       .body(newUser)
       .postRequestJson<User>(201);
 
-    await expect(createdUser).shouldMatchSchema(Schema.POST_USER);
+    await expect(createdUser).shouldMatchSchema(Schema.USER);
     expect(createdUser.id).toBeDefined();
     expect(createdUser.name).shouldEqual(newUser.name);
     expect(createdUser.email).shouldEqual(newUser.email);
@@ -90,7 +90,7 @@ test.describe('POST Requests', () => {
       .body(invalidUser)
       .postRequestJson<ErrorResponse[]>(422);
 
-    await expect(errors).shouldMatchSchema(Schema.POST_ERROR);
+    await expect(errors).shouldMatchSchema(Schema.ERROR);
     expect(errors.length).toBeGreaterThan(0);
     expect(errors.some(e => e.field === 'email')).toBeTruthy();
   });

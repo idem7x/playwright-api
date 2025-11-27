@@ -11,7 +11,7 @@ test.describe('GET Requests', () => {
             .params({ page: 1, per_page: 10 })
             .getRequestJson<User[]>(200);
 
-        await expect(response).shouldMatchSchema(Schema.GET_USERS);
+        await expect(response).shouldMatchSchema(Schema.USERS);
 
         expect(Array.isArray(response)).toBe(true);
         expect(response.length).toBeGreaterThan(0);
@@ -31,7 +31,7 @@ test.describe('GET Requests', () => {
             .path(`${Endpoint.USERS}/${userId}`)
             .getRequestJson<User>(200);
 
-        await expect(user).shouldMatchSchema(Schema.GET_USER);
+        await expect(user).shouldMatchSchema(Schema.USER);
         expect(user.id).shouldEqual(userId);
         expect(user.email).shouldBeValidEmail();
         expect(user.gender).shouldBeOneOf(['male', 'female']);
@@ -55,7 +55,7 @@ test.describe('GET Requests', () => {
             .params({ gender: 'male', per_page: 5 })
             .getRequestJson<User[]>(200);
 
-        await expect(users).shouldMatchSchema(Schema.GET_USERS);
+        await expect(users).shouldMatchSchema(Schema.USERS);
         users.forEach(user => {
             expect(user.gender).shouldEqual('male');
         });
