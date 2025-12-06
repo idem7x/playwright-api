@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import type { CreateUserRequest, UserGender, UserStatus } from '@constants/userTypes';
+import type { CreateUserRequest, UserGender, UserStatus } from '@constants/UserTypes';
 
 type SexType = NonNullable<Parameters<typeof faker.person.fullName>[0]>['sex'];
 

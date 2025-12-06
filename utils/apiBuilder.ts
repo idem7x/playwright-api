@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import type { APIRequestContext, APIResponse } from '@playwright/test';
-import type { RequestBody, RequestHeaders, RequestParams } from "@constants/userTypes";
+import type { RequestBody, RequestHeaders, RequestParams } from "@constants/UserTypes";
 
 export class ApiBuilder {
   private endpoint: string = '';
