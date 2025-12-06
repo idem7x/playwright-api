@@ -1,10 +1,10 @@
 import { test, expect } from 'fixtures/apiFixtures';
-import 'utils/customMatchers';
-import type { User, ErrorResponse } from 'types/userTypes';
-import { Endpoint } from "enums/Endpoint";
-import { Schema } from "enums/Schema";
-import { logger } from "utils/logger";
-import { DataGenerator } from "utils/dataGenerator";
+import '@utils/customMatchers';
+import type { User, ErrorResponse } from '@constants/userTypes';
+import { Endpoint } from "@constants/Endpoint";
+import { Schema } from "@constants/Schema";
+import { logger } from "@utils/logger";
+import { DataGenerator } from "@utils/dataGenerator";
 
 test.describe('POST Requests', () => {
   let createdUserIds: number[] = [];

@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { ApiBuilder } from 'utils/apiBuilder';
+import { ApiBuilder } from '@utils/apiBuilder';
 
 type ApiFixtures = {
   api: ApiBuilder;

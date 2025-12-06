@@ -1,10 +1,10 @@
 import { test, expect } from 'fixtures/apiFixtures';
-import 'utils/customMatchers';
-import type { User } from 'types/userTypes';
+import '@utils/customMatchers';
+import type { User } from '@constants/userTypes';
 import { logger } from 'utils/logger';
-import { Endpoint } from "enums/Endpoint";
-import { Schema } from "enums/Schema";
-import { DataGenerator } from "utils/dataGenerator";
+import { Endpoint } from "@constants/Endpoint";
+import { Schema } from "@constants/Schema";
+import { DataGenerator } from "@utils/dataGenerator";
 
 test.describe('Smoke Tests - Critical User Flows', () => {
   test('Create, Verify, Update, and Delete User - Full CRUD Flow', async ({ api }) => {

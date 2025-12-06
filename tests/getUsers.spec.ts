@@ -1,8 +1,8 @@
-import { test, expect } from 'fixtures/apiFixtures';
-import 'utils/customMatchers';
-import type { User } from 'types/userTypes';
-import { Endpoint } from "enums/Endpoint";
-import { Schema } from "enums/Schema";
+import { test, expect } from '@fixtures/apiFixtures';
+import '@utils/customMatchers';
+import type { User } from '@constants/userTypes';
+import { Endpoint } from "@constants/Endpoint";
+import { Schema } from "@constants/Schema";
 
 test.describe('GET Requests', () => {
     test('GET - Should retrieve all users with pagination and schema validation', async ({ api }) => {

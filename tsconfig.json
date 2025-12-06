@@ -16,12 +16,13 @@
     "paths": {
       "@schemas/*": ["schemas/*"],
       "@fixtures/*": ["fixtures/*"],
-      "@enums/*": ["enums/*"],
+      "@constants/*": ["constants/*"],
       "@helpers/*": ["helpers/*"],
       "@config/*": ["config/*"],
-      "@types/*": ["types/*"]
+      "@types/*": ["types/*"],
+      "@utils/*": ["utils/*"]
     }
   },
-  "include": ["**/*.ts"],
+  "include": ["**/*.ts", "**/*.d.ts", "*.ts"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,18 +1,5 @@
 import { expect } from '@playwright/test';
-import SchemaValidator from 'utils/schemaValidator';
-
-declare global {
-  namespace PlaywrightTest {
-    interface Matchers<R> {
-      shouldMatchSchema(schema: string): Promise<R>;
-      shouldEqual(expected: unknown): R;
-      shouldContain(expected: unknown): R;
-      shouldBeValidEmail(): R;
-      shouldBeOneOf(values: unknown[]): R;
-      shouldBeArray(): R;
-    }
-  }
-}
+import SchemaValidator from '@utils/schemaValidator';
 
 expect.extend({
   async shouldMatchSchema(received: unknown, schema: string) {
