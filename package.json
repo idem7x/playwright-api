@@ -5,6 +5,7 @@
   "description": "API Testing Framework with Playwright and TypeScript",
   "scripts": {
     "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
     "report": "npx playwright show-report",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
